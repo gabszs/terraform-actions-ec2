@@ -42,9 +42,6 @@ jobs:
           DESTROY="$(jq -r '.${{ inputs.environment }}' ./infra/destroy_config.json)"
           echo "destroy=$(echo $DESTROY)" >> $GITHUB_OUTPUT
 
-      - name: Terraform migrate
-        run: terraform init -migrate-state
-
       - name: Terraform Init
         run: |
           cd infra && terraform init \
