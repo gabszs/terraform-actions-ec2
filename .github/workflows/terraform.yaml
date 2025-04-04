@@ -45,6 +45,11 @@ jobs:
           DESTROY="$(jq -r '.${{ inputs.environment }}' ./infra/destroy_config.json)"
           echo "destroy=$(echo $DESTROY)" >> $GITHUB_OUTPUT
 
+      - name: Debug Backend Config
+        run: |
+          echo "S3 Bucket: ${{ inputs.statefile-s3-bucket }}"
+          echo "Key: ${{ github.event.repository.name }}"
+
       - name: Terraform Init
         run: |
           cd infra && terraform init \
