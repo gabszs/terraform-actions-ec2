@@ -12,6 +12,9 @@ on:
       aws-region:
         type: string
         required: true
+      statefile-s3-bucket:
+        type: string
+        required: true
 
 jobs:
   terraform:
