@@ -15,12 +15,6 @@ on:
       statefile-s3-bucket:
         type: string
         required: true
-      aws-region:
-        type: string
-        required: true
-      statefile-s3-bucket:
-        type: string
-        required: true
 
 jobs:
   terraform:
@@ -56,11 +50,6 @@ jobs:
           echo "S3 Bucket: ${{ inputs.statefile-s3-bucket }}"
           echo "Key: ${{ github.event.repository.name }}"
 
-      - name: Debug Backend Config
-        run: |
-          echo "S3 Bucket: ${{ inputs.statefile-s3-bucket }}"
-          echo "Key: ${{ github.event.repository.name }}"
-
       - name: Terraform Init
         run: |
           cd infra && terraform init \
@@ -74,7 +63,6 @@ jobs:
         if: steps.read-destroy-config.outputs.destroy == 'true'
         id: terraform-destroy
         run: cd infra &&
-          terraform workspace select -or-create ${{ inputs.environment }} &&
           terraform workspace select -or-create ${{ inputs.environment }} &&
           terraform destroy -var-file="./envs/${{ inputs.environment }}/terraform.tfvars" -auto-approve
 
