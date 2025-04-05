@@ -11,8 +11,9 @@ permissions:
 
 jobs:
   terraform:
-    uses: ./.github/workflows/terraform.yml
+    uses: ./.github/workflows/terraform.yaml
     with:
       environment: dev
-      aws-assume-role-arn: "arn:aws:iam::515966499694:role/github-actions-gabszs-pipeline-terraform-access"
+      aws-assume-role-arn: "arn:aws:iam::515966499694:role/github-actions-terraform-role"
       aws-region: "sa-east-1"
+      statefile-s3-bucket: "test-actions-bucket-state-file"

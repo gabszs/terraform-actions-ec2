@@ -9,7 +9,6 @@ terraform {
   backend "s3" {
     bucket       = "test-actions-bucket-state-file"
     region       = "sa-east-1"
-    key          = "test/infra.tfstate"
     use_lockfile = true
   }
   required_version = "~> 1.10"
