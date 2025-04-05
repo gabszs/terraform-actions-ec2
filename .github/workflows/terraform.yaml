@@ -50,6 +50,7 @@ jobs:
           echo "S3 Bucket: ${{ inputs.statefile-s3-bucket }}"
           echo "Key: ${{ github.event.repository.name }}"
           echo "Destroy config: ${{ steps.read-destroy-config.outputs.destroy }}"
+          cd infra && terraform console && var.role_arn
 
       - name: Terraform Init
         run: |
@@ -65,7 +66,7 @@ jobs:
         id: terraform-plan
         run: cd infra &&
           terraform workspace select -or-create ${{ inputs.environment }} &&
-          terraform plan -var-file="./envs/${{ inputs.environment }}/terraform.tfvars" -out="${{ inputs.environment }}.plan"
+          TF_LOG=DEBUG terraform plan -var-file="./envs/${{ inputs.environment }}/terraform.tfvars" -out="${{ inputs.environment }}.plan"
 
       - name: Terraform Apply
         if: steps.read-destroy-config.outputs.destroy != 'true'
