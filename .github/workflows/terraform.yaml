@@ -45,18 +45,18 @@ jobs:
           DESTROY="$(jq -r '.${{ inputs.environment }}' ./infra/destroy_config.json)"
           echo "destroy=$(echo $DESTROY)" >> $GITHUB_OUTPUT
 
+      - name: Terraform Init
+        run: |
+          cd infra && terraform init \
+            -backend-config="bucket=${{ inputs.statefile-s3-bucket }}" \
+            -backend-config="key=${{ github.event.repository.name }}.tfstate"
+
       - name: Debug Backend Config
         run: |
           echo "S3 Bucket: ${{ inputs.statefile-s3-bucket }}"
           echo "Key: ${{ github.event.repository.name }}"
           echo "Destroy config: ${{ steps.read-destroy-config.outputs.destroy }}"
           cd infra && terraform console && var.role_arn
-
-      - name: Terraform Init
-        run: |
-          cd infra && terraform init \
-            -backend-config="bucket=${{ inputs.statefile-s3-bucket }}" \
-            -backend-config="key=${{ github.event.repository.name }}.tfstate"
 
       - name: Terraform Validate
         run: terraform validate
