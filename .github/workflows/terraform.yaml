@@ -59,7 +59,7 @@ jobs:
         id: terraform-destroy
         run: cd infra &&
           terraform workspace select -or-create ${{ inputs.environment }} &&
-          terraform destroy -var-file="./envs/${{ inputs.environment }}/terraform.tfvars"
+          terraform destroy -var-file="./envs/${{ inputs.environment }}/terraform.tfvars" --auto-approve
 
       - name: Terraform Plan
         if: steps.read-destroy-config.outputs.destroy != 'true'
