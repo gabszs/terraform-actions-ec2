@@ -17,9 +17,9 @@ terraform {
 provider "aws" {
   region = var.region
 
-  assume_role {
-    role_arn = var.role_arn
-  }
+  # assume_role {
+  #   role_arn = var.role_arn
+  # }
 
   default_tags {
     tags = local.default_tags
@@ -28,7 +28,7 @@ provider "aws" {
 
 ## EC2
 resource "aws_instance" "this" {
-  ami = var.instance_ami
+  ami           = var.instance_ami
   instance_type = var.instance_type
 
   tags = {
