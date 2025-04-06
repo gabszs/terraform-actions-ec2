@@ -56,7 +56,7 @@ jobs:
           echo "S3 Bucket: ${{ inputs.statefile-s3-bucket }}"
           echo "Key: ${{ github.event.repository.name }}"
           echo "Destroy config: ${{ steps.read-destroy-config.outputs.destroy }}"
-          cd infra && terraform console && var.role_arn
+          # cd infra && terraform console && var.role_arn
 
       - name: Terraform Validate
         run: terraform validate
