@@ -51,22 +51,22 @@ jobs:
             -backend-config="bucket=${{ inputs.statefile-s3-bucket }}" \
             -backend-config="key=${{ github.event.repository.name }}.tfstate"
 
-      - name: Debug Backend Config
-        run: |
-          echo "S3 Bucket: ${{ inputs.statefile-s3-bucket }}"
-          echo "Key: ${{ github.event.repository.name }}"
-          echo "Destroy config: ${{ steps.read-destroy-config.outputs.destroy }}"
-          # cd infra && terraform console && var.role_arn
-
       - name: Terraform Validate
         run: terraform validate
+
+      - name: Terraform Destroy
+        if: steps.read-destroy-config.outputs.destroy == 'true'
+        id: terraform-destroy
+        run: cd infra &&
+          terraform workspace select -or-create ${{ inputs.environment }} &&
+          terraform destroy -var-file="./envs/${{ inputs.environment }}/terraform.tfvars"
 
       - name: Terraform Plan
         if: steps.read-destroy-config.outputs.destroy != 'true'
         id: terraform-plan
         run: cd infra &&
           terraform workspace select -or-create ${{ inputs.environment }} &&
-          TF_LOG=DEBUG terraform plan -var-file="./envs/${{ inputs.environment }}/terraform.tfvars" -out="${{ inputs.environment }}.plan"
+          terraform plan -var-file="./envs/${{ inputs.environment }}/terraform.tfvars" -out="${{ inputs.environment }}.plan"
 
       - name: Terraform Apply
         if: steps.read-destroy-config.outputs.destroy != 'true'
@@ -74,10 +74,3 @@ jobs:
         run: cd infra &&
           terraform workspace select -or-create ${{ inputs.environment }} &&
           terraform apply "${{ inputs.environment }}.plan"
-
-      - name: Terraform Destroy
-        if: steps.read-destroy-config.outputs.destroy == 'true'
-        id: terraform-destroy
-        run: cd infra &&
-          terraform workspace select -or-create ${{ inputs.environment }} &&
-          terraform destroy -var-file="./envs/${{ inputs.environment }}/terraform.tfvars" -auto-approve
